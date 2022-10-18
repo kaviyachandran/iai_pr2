@@ -43,3 +43,5 @@ pub_base_pose_rate: 60.0
 spawn_and_destroy_objects_rate: 0.0
 
 root_frame_id: odom_combined
+
+max_time_step: 0.02
