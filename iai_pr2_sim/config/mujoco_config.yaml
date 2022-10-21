@@ -44,4 +44,4 @@ spawn_and_destroy_objects_rate: 0.0
 
 root_frame_id: odom_combined
 
-max_time_step: 0.02
+max_time_step: 0.009
