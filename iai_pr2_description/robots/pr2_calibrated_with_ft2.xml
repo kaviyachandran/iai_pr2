@@ -1,51 +1,5 @@
 <?xml version="1.0" ?>
 <robot name="pr2" xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#slider" xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor" xmlns:xacro="http://ros.org/wiki/xacro">
-  <gazebo>
-    <plugin filename="libgazebo_ros_controller_manager.so" name="gazebo_ros_controller_manager">
-      
-      
-      <alwaysOn>true</alwaysOn>
-      
-      
-      <updateRate>1000.0</updateRate>
-      
-    
-    </plugin>
-    <plugin filename="libgazebo_ros_power_monitor.so" name="gazebo_ros_power_monitor_controller">
-      
-      
-      <alwaysOn>true</alwaysOn>
-      
-      
-      <updateRate>1.0</updateRate>
-      
-      
-      <timeout>5</timeout>
-      
-      
-      <powerStateTopic>power_state</powerStateTopic>
-      
-      
-      <powerStateRate>10.0</powerStateRate>
-      
-      
-      <fullChargeCapacity>87.78</fullChargeCapacity>
-      
-      
-      <dischargeRate>-474</dischargeRate>
-      
-      
-      <chargeRate>525</chargeRate>
-      
-      
-      <dischargeVoltage>15.52</dischargeVoltage>
-      
-      
-      <chargeVoltage>16.41</chargeVoltage>
-      
-    
-    </plugin>
-  </gazebo>
   <material name="Blue">
     <color rgba="0 0 0.8 1"/>
   </material>
