@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="namespace" default="pr2" />
+  <arg name="gui" default="false" />
 
   <!-- <include file="$(find iai_pr2_description)/launch/upload_pr2_calibrated_with_ft2.launch" /> -->
   <param name="robot_description" textfile="$(find iai_pr2_description)/robots/pr2_calibrated_with_ft2.xml"/>
@@ -10,17 +11,27 @@
     <param name="child_frame" value="odom_combined" />
   </node>
 
-    <!-- <arg name="model" default="$(find stack_blocks)/model/iai_kitchen_python.urdf.xacro" /> -->
-    <!-- <param name="door_description" command="$(find xacro)/xacro $(find stack_blocks)/model/table_top_env.xacro" />
-    <node pkg="tf" type="static_transform_publisher" name="iai_kitchen_room_link_broadcaster" args="0.0 0.0 0. 0.0 0. 0. map door/world 25"></node>
+  <param name="door_description" command="$(find xacro)/xacro $(find stack_blocks)/model/table_top_env.xacro" />
 
-    <node name="kitchen_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-        <remap from="robot_description" to="door_description" />
-        <remap from="joint_states" to="/mujoco/joint_states" />
-        <param name="tf_prefix" value="door" />
-        <param name="publish_frequency" value="60" />
-    </node> -->
 
+  <node if="$(arg gui)" name="door_joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
+    <remap from="robot_description" to="door_description" />
+    <remap from="/joint_states" to="/mujoco/joint_states" />
+  </node>
+
+
+  <node unless="$(arg gui)" name="door_joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <remap from="robot_description" to="door_description" />
+    <remap from="/joint_states" to="/mujoco/joint_states" />
+  </node>
+
+  <node name="door_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="robot_description" to="door_description" />
+    <remap from="/joint_states" to="/mujoco/joint_states" />
+    <param name="publish_frequency" value="200" />
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_map" args="0.0 0.0 0 0.0 0 0 map world 200"/>
 
   <group ns="$(arg namespace)">
     <include file="$(find mujoco_sim)/launch/mujoco_sim.launch">
@@ -29,17 +40,23 @@
       <arg name="config" value="$(find iai_pr2_sim)/config/mujoco_config.yaml" />
       <arg name="world" value="$(find iai_pr2_sim)/config/mujoco_world.xml" />
       <arg name="disable_parent_child_collision_level" value="2" />
+      <arg name="world" value="$(find mujoco_sim)/model/world/table_top.xml" />
+      <!-- <arg name="world" value="$(find mujoco_sim)/model/world/empty.xml" /> -->
     </include>
-    <rosparam command="load" file="$(find iai_pr2_sim)/config/ros_control_sim_mujoco.yaml" /> -->
+    <rosparam command="load" file="$(find iai_pr2_sim)/config/ros_control_sim_mujoco.yaml" />
     <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn
-      joint_state_controller 
-      whole_body_controller
+      joint_state_controller
+      r_body_controller
+      l_body_controller
       r_gripper_l_finger_controller
       l_gripper_l_finger_controller"
     />
+    <node name="compliance_controller_manager" pkg="controller_manager" type="spawner"
+                args="--stopped cartesian_compliance_controller"
+    />
   </group>
       <!-- args="stopped cartesian_compliance_controller" -->
-  <!-- l_gripper_l_finger_controller  -->
+  <!-- whole_body_controller -->
   <!-- cartesian_compliance_controller -->
   <node name="rqt_joint_trajectory_controller" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller" />
   <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen">
@@ -51,4 +68,4 @@
   </node>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find giskardpy)/config/rob.rviz" required="true" />
-</launch> 
+</launch>
