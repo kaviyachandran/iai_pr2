@@ -16,6 +16,35 @@ joint_inits:
   l_wrist_roll_joint: 0
   head_pan_joint: 0
   head_tilt_joint: 0
+  r_gripper_l_finger_joint: 0
+  l_gripper_l_finger_joint: 0
+
+controlled_joints:
+  - torso_lift_joint
+  - r_upper_arm_roll_joint
+  - r_shoulder_pan_joint
+  - r_shoulder_lift_joint
+  - r_forearm_roll_joint
+  - r_elbow_flex_joint
+  - r_wrist_flex_joint
+  - r_wrist_roll_joint
+  - l_upper_arm_roll_joint
+  - l_shoulder_pan_joint
+  - l_shoulder_lift_joint
+  - l_forearm_roll_joint
+  - l_elbow_flex_joint
+  - l_wrist_flex_joint
+  - l_wrist_roll_joint
+  - head_pan_joint
+  - head_tilt_joint
+  - r_gripper_l_finger_joint
+  - l_gripper_l_finger_joint
+
+save_path: "model/save" # Path to save screenshot, either a relative path to mujoco_sim or an absolute path
+
+disable_gravity: false # Disable gravity or not
+
+add_odom_joints: false # true for mobile robots, false for fixed-based robots
 
 # add_odom_joints: true
 add_odom_joints:
@@ -25,23 +54,38 @@ add_odom_joints:
   ang_odom_x_joint: false
   ang_odom_y_joint: false
   ang_odom_z_joint: true
+  
+max_time_step: 0.001 # Maximal time step (bigger value <=> faster but more unstable)
 
-pub_object_marker_array_rate:
-  world_bodies_rate: 0.0
+pub_object_marker_array:
+  free_bodies_only: True # Only publish the marker array of free objects
+  robot_bodies_rate: 0.0 # The frequency to publish the marker array of robot
+  world_bodies_rate: 0.0 # The frequency to publish the marker array of world
+  spawned_object_bodies_rate: 0.0 # The frequency to publish the marker array of spawned objects
 
 pub_tf:
-  world_bodies_rate: 60.0
+  free_bodies_only: True # Only publish the tf of free objects
+  robot_bodies_rate: 0.0 # The frequency to publish the tf of robot
+  world_bodies_rate: 0.0 # The frequency to publish the tf of world
+  spawned_object_bodies_rate: 60.0 # The frequency to publish the tf of spawned objects
 
 pub_object_state_array:
-  world_bodies_rate: 60.0
+  free_bodies_only: True # Only publish the object state of free objects
+  robot_bodies_rate: 0.0 # The frequency to publish the object state of robot
+  world_bodies_rate: 0.0 # The frequency to publish the object state of world
+  spawned_object_bodies_rate: 60.0 # The frequency to publish the object state of spawned objects
 
-pub_joint_states:
-  world_bodies_rate: 0.0
+pub_joint_states: 
+  robot_bodies_rate: 0.0 # The frequency to publish the joint states of robot
+  world_bodies_rate: 60.0 # The frequency to publish the joint states of world
+  spawned_object_bodies_rate: 60.0 # The frequency to publish the joint states of spawned objects
 
-pub_base_pose_rate: 60.0
+pub_base_pose_rate: 60.0 # The frequency to publish the base pose of the robot
 
-spawn_and_destroy_objects_rate: 0.0
+pub_sensor_data_rate: 60 # The frequency to publish the sensor data
 
-root_frame_id: odom_combined
+spawn_and_destroy_objects_rate: 10.0 # The frequency to spawn and destroy the objects
 
-max_time_step: 0.009
+spawn_object_count_per_cycle: 20 # The maximal number of objects to spawn per cycle
+
+root_frame_id: odom_combined # The frame id of the world (normally 'map' for fixed-based robots and 'odom' for mobile robots)

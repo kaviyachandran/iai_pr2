@@ -36,12 +36,10 @@
   <group ns="$(arg namespace)">
     <include file="$(find mujoco_sim)/launch/mujoco_sim.launch">
       <arg name="robot" value="$(find iai_pr2_description)/robots/pr2_calibrated_with_ft2_without_virtual_joints.urdf" />
+      <arg name="disable_parent_child_collision_level" value="2"/>
       <arg name="use_urdf" value="true" />
-      <arg name="config" value="$(find iai_pr2_sim)/config/mujoco_config.yaml" />
-      <arg name="world" value="$(find iai_pr2_sim)/config/mujoco_world.xml" />
-      <arg name="disable_parent_child_collision_level" value="2" />
-      <arg name="world" value="$(find mujoco_sim)/model/world/table_top.xml" />
-      <!-- <arg name="world" value="$(find mujoco_sim)/model/world/empty.xml" /> -->
+      <arg name="config" default="$(find iai_pr2_sim)/config/mujoco_config.yaml" />
+      <arg name="world" value="$(find mujoco_sim)/model/pr2_mujoco_model/scene_pr2.xml" />
     </include>
     <rosparam command="load" file="$(find iai_pr2_sim)/config/ros_control_sim_mujoco.yaml" />
     <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn
@@ -51,14 +49,13 @@
       r_gripper_l_finger_controller
       l_gripper_l_finger_controller"
     />
-    <node name="compliance_controller_manager" pkg="controller_manager" type="spawner"
-                args="--stopped cartesian_compliance_controller"
-    />
+    <!-- <node name="compliance_controller_manager" pkg="controller_manager" type="spawner"
+                args="stopped cartesian_compliance_controller" /> -->
   </group>
       <!-- args="stopped cartesian_compliance_controller" -->
   <!-- whole_body_controller -->
   <!-- cartesian_compliance_controller -->
-  <node name="rqt_joint_trajectory_controller" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller" />
+  <!-- <node name="rqt_joint_trajectory_controller" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller" /> -->
   <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen">
     <rosparam param="source_list">
       - pr2/joint_states
@@ -67,5 +64,6 @@
     <param name="use_gui" value="False" />
   </node>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find giskardpy)/config/rob.rviz" required="true" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find giskardpy)/config/gis.rviz" required="true" />
+
 </launch>
