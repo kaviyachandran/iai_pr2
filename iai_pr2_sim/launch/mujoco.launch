@@ -1,37 +1,38 @@
 <launch>
 
   <arg name="namespace" default="pr2" />
-  <arg name="gui" default="false" />
+  <arg name="gui" default="true" />
 
   <!-- <include file="$(find iai_pr2_description)/launch/upload_pr2_calibrated_with_ft2.launch" /> -->
-  <param name="robot_description" textfile="$(find iai_pr2_description)/robots/pr2_calibrated_with_ft2.xml"/>
+  <!-- <param name="robot_description" textfile="$(find iai_pr2_description)/robots/pr2_calibrated_with_ft2.xml"/> -->
 
-  <node pkg="iai_naive_kinematics_sim" type="map_odom_transform_publisher.py" name="map_odom_transform_publisher" output="screen">
+  <!-- <node pkg="iai_naive_kinematics_sim" type="map_odom_transform_publisher.py" name="map_odom_transform_publisher" output="screen">
     <param name="parent_frame" value="map" />
     <param name="child_frame" value="odom_combined" />
-  </node>
+  </node> -->
 
   <param name="door_description" command="$(find xacro)/xacro $(find stack_blocks)/model/table_top_env.xacro" />
-
+<!-- 
 
   <node if="$(arg gui)" name="door_joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
     <remap from="robot_description" to="door_description" />
-    <remap from="/joint_states" to="/mujoco/joint_states" />
-  </node>
+    <remap from="/joint_states" to="/world_joint_states" />
+  </node> -->
 
 
-  <node unless="$(arg gui)" name="door_joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+  <!-- <node unless="$(arg gui)" name="door_joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
     <remap from="robot_description" to="door_description" />
     <remap from="/joint_states" to="/mujoco/joint_states" />
-  </node>
+  </node> -->
 
   <node name="door_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
     <remap from="robot_description" to="door_description" />
-    <remap from="/joint_states" to="/mujoco/joint_states" />
+    <remap from="/joint_states" to="/mujoco/world_joint_states" />
     <param name="publish_frequency" value="200" />
   </node>
 
-  <node pkg="tf" type="static_transform_publisher" name="world_map" args="0.0 0.0 0 0.0 0 0 map world 200"/>
+  <node pkg="tf" type="static_transform_publisher" name="map_odom" args="0.0 0.0 0 0.0 0 0 map odom 200"/>
+  <node pkg="tf" type="static_transform_publisher" name="world_map" args="0.0 0.0 0 0.0 0 0 world map 200"/>
 
   <group ns="$(arg namespace)">
     <include file="$(find mujoco_sim)/launch/mujoco_sim.launch">
@@ -44,11 +45,27 @@
     <rosparam command="load" file="$(find iai_pr2_sim)/config/ros_control_sim_mujoco.yaml" />
     <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn
       joint_state_controller
-      r_body_controller
-      l_body_controller
+      torso_lift_velocity_controller
+      r_upper_arm_roll_velocity_controller
+      r_shoulder_pan_velocity_controller
+      r_shoulder_lift_velocity_controller
+      r_forearm_roll_velocity_controller
+      r_elbow_flex_velocity_controller
+      r_wrist_flex_velocity_controller
+      r_wrist_roll_velocity_controller
+      l_upper_arm_roll_velocity_controller
+      l_shoulder_pan_velocity_controller
+      l_shoulder_lift_velocity_controller
+      l_forearm_roll_velocity_controller
+      l_elbow_flex_velocity_controller
+      l_wrist_flex_velocity_controller
+      l_wrist_roll_velocity_controller
+      head_pan_velocity_controller
+      head_tilt_velocity_controller
       r_gripper_l_finger_controller
       l_gripper_l_finger_controller"
     />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     <!-- <node name="compliance_controller_manager" pkg="controller_manager" type="spawner"
                 args="stopped cartesian_compliance_controller" /> -->
   </group>
@@ -56,14 +73,14 @@
   <!-- whole_body_controller -->
   <!-- cartesian_compliance_controller -->
   <!-- <node name="rqt_joint_trajectory_controller" pkg="rqt_joint_trajectory_controller" type="rqt_joint_trajectory_controller" /> -->
-  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen">
+  <!-- <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen">
     <rosparam param="source_list">
       - pr2/joint_states
     </rosparam>
     <param name="rate" value="120" />
     <param name="use_gui" value="False" />
-  </node>
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find giskardpy)/config/gis.rviz" required="true" />
+  </node> -->
+  
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find giskardpy)/config/gis.rviz" required="true" /> -->
 
 </launch>
