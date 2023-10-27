@@ -4,7 +4,7 @@
   <arg name="gui" default="true" />
 
   <!-- <include file="$(find iai_pr2_description)/launch/upload_pr2_calibrated_with_ft2.launch" /> -->
-  <!-- <param name="robot_description" textfile="$(find iai_pr2_description)/robots/pr2_calibrated_with_ft2.xml"/> -->
+  <param name="robot_description" textfile="$(find iai_pr2_description)/robots/pr2_calibrated_with_ft2_without_virtual_joints.urdf"/>
 
   <node pkg="iai_naive_kinematics_sim" type="map_odom_transform_publisher.py" name="map_odom_transform_publisher" output="screen">
     <param name="parent_frame" value="map" />
@@ -12,11 +12,11 @@
   </node>
 
   <param name="door_description" command="$(find xacro)/xacro $(find stack_blocks)/model/table_top_env.xacro" />
-<!-- 
 
-  <node if="$(arg gui)" name="door_joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
+
+  <!-- <node if="$(arg gui)" name="door_joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
     <remap from="robot_description" to="door_description" />
-    <remap from="/joint_states" to="/world_joint_states" />
+    <remap from="/joint_states" to="/mujoco/world_joint_states" />
   </node> -->
 
 
@@ -37,7 +37,7 @@
   <!-- <group ns="$(arg namespace)"> -->
     <include file="$(find mujoco_sim)/launch/mujoco_sim.launch">
       <arg name="robot" value="$(find iai_pr2_description)/robots/pr2_calibrated_with_ft2_without_virtual_joints.urdf" />
-      <arg name="disable_parent_child_collision_level" value="2"/>
+      <arg name="disable_parent_child_collision_level" value="5"/>
       <arg name="use_urdf" value="true" />
       <arg name="config" default="$(find iai_pr2_sim)/config/mujoco_config.yaml" />
       <arg name="world" value="$(find mujoco_sim)/model/pr2_mujoco_model/scene_pr2.xml" />
@@ -65,6 +65,25 @@
       r_gripper_l_finger_controller
       l_gripper_l_finger_controller"
     />
+
+  <!-- torso_lift_velocity_controller
+      r_upper_arm_roll_velocity_controller
+      r_shoulder_pan_velocity_controller
+      r_shoulder_lift_velocity_controller
+      r_forearm_roll_velocity_controller
+      r_elbow_flex_velocity_controller
+      r_wrist_flex_velocity_controller
+      r_wrist_roll_velocity_controller
+      l_upper_arm_roll_velocity_controller
+      l_shoulder_pan_velocity_controller
+      l_shoulder_lift_velocity_controller
+      l_forearm_roll_velocity_controller
+      l_elbow_flex_velocity_controller
+      l_wrist_flex_velocity_controller
+      l_wrist_roll_velocity_controller
+      head_pan_velocity_controller
+      head_tilt_velocity_controller -->
+
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     <!-- <node name="compliance_controller_manager" pkg="controller_manager" type="spawner"
                 args="stopped cartesian_compliance_controller" /> -->
