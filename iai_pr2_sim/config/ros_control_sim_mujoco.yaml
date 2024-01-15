@@ -252,6 +252,13 @@ head_tilt_velocity_controller:
 
 
 
+r_gripper_controller:
+  type: effort_controllers/JointEffortController
+  joint: r_gripper_l_finger_joint
+
+l_gripper_controller:
+  type: effort_controllers/JointEffortController
+  joint: l_gripper_l_finger_joint
 
 
 
